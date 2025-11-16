@@ -1,179 +1,108 @@
-{% extends 'base.html' %} {% block content %}
-<div class="w3-row-padding">
-  <div class="w3-third">
-    <div class="w3-card-4 w3-padding w3-round-large w3-dark-grey">
-      <fieldset
-        class="w3-round-large"
-        style="border: 2px solid #444; background: #222; color: #f5f5f5"
-      >
-        <legend class="w3-text-light-grey">
-          <b>🎓 STUDENT INFORMATION</b>
-        </legend>
-        <form
-          action="{{ url_for('add_student') }}"
-          method="POST"
-          id="studentForm"
-        >
-          <center>
-            <img
-              src="{{ url_for('static', filename='images/account.png') }}"
-              style="
-                width: 150px;
-                height: 150px;
-                object-fit: cover;
-                border-radius: 50%;
-                border: 3px solid #888;
-                margin-top: 10px;
-                margin-bottom: 10px;
-                background: #333;
-              "
-            />
-          </center>
+{% extends 'base.html' %}
+{% block content %}
+	<div class="w3-row-padding">
+		<div class="w3-third">
+			<div class="w3-card-4 w3-padding w3-round-large w3-dark-grey">	  
+				<fieldset class="w3-round-large" style="border:2px solid #444;background:#222;color:#f5f5f5;">
+					<legend class="w3-text-light-grey"><b>🎓 STUDENT INFORMATION</b></legend>
+					<form action="{{ url_for('add_student') }}" method="POST" id="studentForm">
+				    <center>
+						<img src="{{ url_for('static', filename='images/account.png') }}" 
+						style="width:150px;height:150px;object-fit:cover;border-radius:50%;
+						border:3px solid #888;margin-top:10px;margin-bottom:10px;background:#333;">
+					</center>
+      
+					<p>
+						<label><b>IDNO</b></label>
+						<input type="number" name="idno" id="idno" class="w3-input w3-border w3-light-grey w3-round-small" required>
+					</p>
+					<p>  
+						<label><b>LASTNAME</b></label>
+						<input type="text" name="lastname" id="lastname" class="w3-input w3-border w3-light-grey w3-round-small" required>
+					</p>
+					<p>  
+						<label><b>FIRSTNAME</b></label>
+						<input type="text" name="firstname" id="firstname" class="w3-input w3-border w3-light-grey w3-round-small" required>
+					</p>
+					<p>  
+						<label><b>COURSE</b></label>
+						<select name="course" id="course" class="w3-input w3-border w3-light-grey w3-round-small" required>
+							<option value="BSIT">INFORMATION TECHNOLOGY</option>
+							<option value="BSCS">COMPUTER SCIENCE</option>
+							<option value="BSCPE">COMPUTER ENGINEERING</option>
+							<option value="BSCRIM">CRIMINOLOGY</option>
+							<option value="BSHM">HOSPITALITY MANAGEMENT</option>
+							<option value="BSN">NURSING</option>
+					  </select>
+					</p>
+					<p>  
+						<label><b>YEAR LEVEL</b></label>
+						<select name="level" id="level" class="w3-input w3-border w3-light-grey w3-round-small" required>
+							<option value="1">FIRST YEAR</option>
+							<option value="2">SECOND YEAR</option>
+							<option value="3">THIRD YEAR</option>
+							<option value="4">FOURTH YEAR</option>
+						</select>
+					</p>
+					<p class="w3-center">
+					  <input type="submit" value="SAVE" class="w3-button w3-green w3-round-large w3-hover-light-green">
+					  <input type="reset" value="CANCEL" class="w3-button w3-red w3-round-large w3-hover-pale-red">
+					</p>
+					</form>
+			</fieldset>
+		</div>
+	</div>
+	<div class="w3-twothird w3-container">
+		<div class="w3-card-4 w3-round-large w3-light-grey w3-padding">
+		<table class="w3-table-all w3-card-4 w3-hoverable w3-striped w3-round-large">
+			<tr style="background-color:#333;color:#fff;">
+				<th>IDNO</th>
+				<th class="w3-hide-small w3-hide-medium">LASTNAME</th>
+				<th class="w3-hide-small w3-hide-medium">FIRSTNAME</th>
+				<th class="w3-hide-large">NAME</th>
+				<th class="w3-hide-small w3-hide-medium">COURSE</th>
+				<th class="w3-hide-small w3-hide-medium">LEVEL</th>
+				<th class="w3-hide-large">COURSE & LEVEL</th>
+				<th>ACTION</th>
+			</tr>
+		  
+			{% for student in studentlist %}
+			<tr class="w3-hover-dark-grey">
+				<td>{{ student['idno'] }}</td>
+				<td class="w3-hide-small w3-hide-medium">{{ student['lastname'].upper() }}</td>
+				<td class="w3-hide-small w3-hide-medium">{{ student['firstname'].upper() }}</td>
+				<td class="w3-hide-large">{{ student['lastname'].upper() }},{{ student['firstname'].upper() }}</td>
+				<td class="w3-hide-small w3-hide-medium">{{ student['course'].upper() }}</td>
+				<td class="w3-hide-small w3-hide-medium">{{ student['level'] }}</td>
+				<td class="w3-hide-large">{{ student['course'].upper() }},{{ student['level'] }}</td>
+				<td>
+					<!-- EDIT BUTTON -->
+					<button class="w3-button w3-round-small w3-dark-grey w3-hover-black"
+						onclick="editStudent('{{ student['idno'] }}','{{ student['lastname'] }}','{{ student['firstname'] }}','{{ student['course'] }}','{{ student['level'] }}')">
+						&#9998;
+					</button>
 
-          <p>
-            <label><b>IDNO</b></label>
-            <input
-              type="number"
-              name="idno"
-              id="idno"
-              class="w3-input w3-border w3-light-grey w3-round-small"
-              required
-            />
-          </p>
-          <p>
-            <label><b>LASTNAME</b></label>
-            <input
-              type="text"
-              name="lastname"
-              id="lastname"
-              class="w3-input w3-border w3-light-grey w3-round-small"
-              required
-            />
-          </p>
-          <p>
-            <label><b>FIRSTNAME</b></label>
-            <input
-              type="text"
-              name="firstname"
-              id="firstname"
-              class="w3-input w3-border w3-light-grey w3-round-small"
-              required
-            />
-          </p>
-          <p>
-            <label><b>COURSE</b></label>
-            <select
-              name="course"
-              id="course"
-              class="w3-input w3-border w3-light-grey w3-round-small"
-              required
-            >
-              <option value="BSIT">INFORMATION TECHNOLOGY</option>
-              <option value="BSCS">COMPUTER SCIENCE</option>
-              <option value="BSCPE">COMPUTER ENGINEERING</option>
-              <option value="BSCRIM">CRIMINOLOGY</option>
-              <option value="BSHM">HOSPITALITY MANAGEMENT</option>
-              <option value="BSN">NURSING</option>
-            </select>
-          </p>
-          <p>
-            <label><b>YEAR LEVEL</b></label>
-            <select
-              name="level"
-              id="level"
-              class="w3-input w3-border w3-light-grey w3-round-small"
-              required
-            >
-              <option value="1">FIRST YEAR</option>
-              <option value="2">SECOND YEAR</option>
-              <option value="3">THIRD YEAR</option>
-              <option value="4">FOURTH YEAR</option>
-            </select>
-          </p>
-          <p class="w3-center">
-            <input
-              type="submit"
-              value="SAVE"
-              class="w3-button w3-green w3-round-large w3-hover-light-green"
-            />
-            <input
-              type="reset"
-              value="CANCEL"
-              class="w3-button w3-red w3-round-large w3-hover-pale-red"
-            />
-          </p>
-        </form>
-      </fieldset>
-    </div>
-  </div>
-  <div class="w3-twothird w3-container">
-    <div class="w3-card-4 w3-round-large w3-light-grey w3-padding">
-      <table
-        class="w3-table-all w3-card-4 w3-hoverable w3-striped w3-round-large"
-      >
-        <tr style="background-color: #333; color: #fff">
-          <th>IDNO</th>
-          <th class="w3-hide-small w3-hide-medium">LASTNAME</th>
-          <th class="w3-hide-small w3-hide-medium">FIRSTNAME</th>
-          <th class="w3-hide-large">NAME</th>
-          <th class="w3-hide-small w3-hide-medium">COURSE</th>
-          <th class="w3-hide-small w3-hide-medium">LEVEL</th>
-          <th class="w3-hide-large">COURSE & LEVEL</th>
-          <th>ACTION</th>
-        </tr>
-
-        {% for student in studentlist %}
-        <tr class="w3-hover-dark-grey">
-          <td>{{ student['idno'] }}</td>
-          <td class="w3-hide-small w3-hide-medium">
-            {{ student['lastname'].upper() }}
-          </td>
-          <td class="w3-hide-small w3-hide-medium">
-            {{ student['firstname'].upper() }}
-          </td>
-          <td class="w3-hide-large">
-            {{ student['lastname'].upper() }},{{ student['firstname'].upper() }}
-          </td>
-          <td class="w3-hide-small w3-hide-medium">
-            {{ student['course'].upper() }}
-          </td>
-          <td class="w3-hide-small w3-hide-medium">{{ student['level'] }}</td>
-          <td class="w3-hide-large">
-            {{ student['course'].upper() }},{{ student['level'] }}
-          </td>
-          <td>
-            <!-- EDIT BUTTON -->
-            <button
-              class="w3-button w3-round-small w3-dark-grey w3-hover-black"
-              onclick="editStudent('{{ student['idno'] }}','{{ student['lastname'] }}','{{ student['firstname'] }}','{{ student['course'] }}','{{ student['level'] }}')"
-            >
-              &#9998;
-            </button>
-
-            <!-- DELETE BUTTON -->
-            <a
-              href="{{ url_for('delete_student', idno=student['idno']) }}"
-              class="w3-button w3-round-small w3-red w3-hover-pale-red"
-              onclick="return confirm('Delete this student?');"
-              >&#x1F5D1;</a
-            >
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-    </div>
-  </div>
+					<!-- DELETE BUTTON -->
+					<a href="{{ url_for('delete_student', idno=student['idno']) }}" 
+					   class="w3-button w3-round-small w3-red w3-hover-pale-red" 
+					   onclick="return confirm('Delete this student?');">&#x1F5D1;</a>
+				</td>
+			</tr>
+		  {% endfor %}
+		</table>
+		</div>
+	</div>
 </div>
 
 <!-- JavaScript for Edit -->
 <script>
-  function editStudent(idno, lastname, firstname, course, level) {
-    document.getElementById("idno").value = idno;
-    document.getElementById("lastname").value = lastname;
-    document.getElementById("firstname").value = firstname;
-    document.getElementById("course").value = course;
-    document.getElementById("level").value = level;
-    window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to form
-  }
+function editStudent(idno, lastname, firstname, course, level) {
+	document.getElementById("idno").value = idno;
+	document.getElementById("lastname").value = lastname;
+	document.getElementById("firstname").value = firstname;
+	document.getElementById("course").value = course;
+	document.getElementById("level").value = level;
+	window.scrollTo({ top: 0, behavior: 'smooth' }); // scroll to form
+}
 </script>
 {% endblock %}

@@ -1,4 +1,6 @@
-from sqlite3 import connect, Row
+from pysqlite3 import connect
+from sqlite3 import Row
+
 
 database: str = 'db/school.db'
 
