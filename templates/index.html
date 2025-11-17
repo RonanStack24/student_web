@@ -9,13 +9,16 @@
         <legend class="w3-text-light-grey">
           <b>STUDENT INFORMATION</b>
         </legend>
+
         <form
           action="{{ url_for('add_student') }}"
           method="POST"
           id="studentForm"
         >
           <center>
+            <!-- PROFILE PREVIEW -->
             <img
+              id="profilePreview"
               src="{{ url_for('static', filename='images/account.png') }}"
               style="
                 width: 150px;
@@ -28,6 +31,24 @@
                 background: #333;
               "
             />
+
+            <!-- FILE INPUT -->
+            <input
+              type="file"
+              id="photoInput"
+              accept="image/*"
+              class="w3-input w3-dark-grey w3-round"
+              style="margin-top: 10px"
+            />
+
+            <!-- UPLOAD BUTTON -->
+            <button
+              type="button"
+              class="w3-button w3-blue w3-round w3-small w3-margin-top"
+              onclick="uploadPhoto()"
+            >
+              Upload Photo
+            </button>
           </center>
 
           <p>
@@ -40,6 +61,7 @@
               required
             />
           </p>
+
           <p>
             <label><b>LASTNAME</b></label>
             <input
@@ -50,6 +72,7 @@
               required
             />
           </p>
+
           <p>
             <label><b>FIRSTNAME</b></label>
             <input
@@ -60,6 +83,7 @@
               required
             />
           </p>
+
           <p>
             <label><b>COURSE</b></label>
             <select
@@ -76,6 +100,7 @@
               <option value="BSN">NURSING</option>
             </select>
           </p>
+
           <p>
             <label><b>YEAR LEVEL</b></label>
             <select
@@ -90,6 +115,7 @@
               <option value="4">FOURTH YEAR</option>
             </select>
           </p>
+
           <p class="w3-center">
             <input
               type="submit"
@@ -106,12 +132,15 @@
       </fieldset>
     </div>
   </div>
+
+  <!-- TABLE -->
   <div class="w3-twothird w3-container">
     <div class="w3-card-4 w3-round-large w3-light-grey w3-padding">
       <table
         class="w3-table-all w3-card-4 w3-hoverable w3-striped w3-round-large"
       >
         <tr style="background-color: #333; color: #fff">
+          <th>PHOTO</th>
           <th>IDNO</th>
           <th class="w3-hide-small w3-hide-medium">LASTNAME</th>
           <th class="w3-hide-small w3-hide-medium">FIRSTNAME</th>
@@ -124,7 +153,24 @@
 
         {% for student in studentlist %}
         <tr class="w3-hover-dark-grey">
+          <!-- PHOTO HERE -->
+          <td>
+            <img
+              src="/static/images/{{ student['idno'] }}.jpg"
+              onerror="this.src='/static/images/account.png'"
+              style="
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid #444;
+              "
+            />
+          </td>
+
+          <!-- IDNO -->
           <td>{{ student['idno'] }}</td>
+
           <td class="w3-hide-small w3-hide-medium">
             {{ student['lastname'].upper() }}
           </td>
@@ -132,26 +178,28 @@
             {{ student['firstname'].upper() }}
           </td>
           <td class="w3-hide-large">
-            {{ student['lastname'].upper() }},{{ student['firstname'].upper() }}
+            {{ student['lastname'].upper() }}, {{ student['firstname'].upper()
+            }}
           </td>
           <td class="w3-hide-small w3-hide-medium">
             {{ student['course'].upper() }}
           </td>
           <td class="w3-hide-small w3-hide-medium">{{ student['level'] }}</td>
           <td class="w3-hide-large">
-            {{ student['course'].upper() }},{{ student['level'] }}
+            {{ student['course'].upper() }}, {{ student['level'] }}
           </td>
+
           <td>
             <!-- EDIT BUTTON -->
             <button
               class="w3-button w3-round-small w3-dark-grey w3-hover-black"
               onclick='editStudent(
-								"{{ student.idno }}",
-								"{{ student.lastname }}",
-								"{{ student.firstname }}",
-								"{{ student.course }}",
-								"{{ student.level }}"
-							)'
+                "{{ student.idno }}",
+                "{{ student.lastname }}",
+                "{{ student.firstname }}",
+                "{{ student.course }}",
+                "{{ student.level }}"
+              )'
             >
               &#9998;
             </button>
@@ -161,8 +209,9 @@
               href="{{ url_for('delete_student', idno=student['idno']) }}"
               class="w3-button w3-round-small w3-red w3-hover-pale-red"
               onclick="return confirm('Delete this student?');"
-              >&#x1F5D1;</a
             >
+              &#x1F5D1;
+            </a>
           </td>
         </tr>
         {% endfor %}
@@ -171,7 +220,44 @@
   </div>
 </div>
 
-<!-- JavaScript for Edit -->
+<!-- Upload Photo JavaScript -->
+<script>
+  function uploadPhoto() {
+    let fileInput = document.getElementById("photoInput");
+    let file = fileInput.files[0];
+    let idno = document.getElementById("idno").value;
+
+    if (!idno) {
+      alert("Enter IDNO before uploading a photo!");
+      return;
+    }
+
+    if (!file) {
+      alert("Please select a photo first!");
+      return;
+    }
+
+    let formData = new FormData();
+    formData.append("photo", file);
+    formData.append("idno", idno);
+
+    fetch("/upload-photo", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(data.message);
+
+        // refresh preview image
+        document.getElementById("profilePreview").src =
+          "/static/images/" + idno + ".jpg?" + new Date().getTime();
+      })
+      .catch((err) => console.error(err));
+  }
+</script>
+
+<!-- Edit button fill form -->
 <script>
   function editStudent(idno, lastname, firstname, course, level) {
     document.getElementById("idno").value = idno;
@@ -179,7 +265,13 @@
     document.getElementById("firstname").value = firstname;
     document.getElementById("course").value = course;
     document.getElementById("level").value = level;
-    window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to form
+
+    // load photo when editing
+    document.getElementById("profilePreview").src =
+      "/static/images/" + idno + ".jpg?" + new Date().getTime();
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 </script>
+
 {% endblock %}
