@@ -1,6 +1,5 @@
 from sqlite3 import connect, Row
 
-
 database: str = 'db/school.db'
 
 def getprocess(sql: str, vals: list) -> list:
