@@ -1,7 +1,7 @@
 import sys
-sys.path.insert(0, "db/")
 
-from dbhelper import *
+from db.dbhelper import *
+
 from flask import Flask, render_template, redirect, url_for, request
 
 app = Flask(__name__)
