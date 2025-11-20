@@ -2,58 +2,94 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/w3.css') }}"
     />
+
     <title>Student Management</title>
 
     <style>
       body {
-        background: linear-gradient(135deg, #1e1e2f, #2a2a3b);
-        color: #f0f0f0;
-        min-height: 100vh;
+        background: #f5f5f5;
+        color: #333;
         font-family: "Segoe UI", sans-serif;
       }
 
       .navbar {
-        background: linear-gradient(to right, #111827, #1e3a8a);
-        color: white;
+        background: white;
+        border-bottom: 1px solid #ddd;
         padding: 14px 24px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-      }
-
-      .navbar h4 {
-        margin: 0;
-        font-weight: 500;
-        letter-spacing: 1px;
+        font-weight: 600;
       }
 
       .footer {
-        color: #aaa;
+        color: #666;
         font-size: 13px;
         margin-top: 40px;
-        text-align: center;
         padding: 20px;
-        border-top: 1px solid #333;
+        border-top: 1px solid #ddd;
+        text-align: center;
+      }
+
+      #messageBox {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        min-width: 240px;
+        padding: 14px;
+        border-radius: 6px;
+        display: none;
+        background: white;
+        border-left: 4px solid #4caf50;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      table img {
+        border-radius: 50%;
       }
     </style>
   </head>
 
   <body>
-    <div class="navbar">
-      <h4>Student Management</h4>
-    </div>
+    <!-- Flash Message Box -->
+    <div id="messageBox" class="w3-panel"></div>
 
-    <div class="w3-container w3-padding">
-      {% block content %} {% endblock %}
-    </div>
+    <script>
+      function showMessage(text, type = "green") {
+        const box = document.getElementById("messageBox");
+        box.style.borderLeftColor =
+          type === "red"
+            ? "#f44336"
+            : type === "yellow"
+            ? "#ff9800"
+            : type === "blue"
+            ? "#2196f3"
+            : "#4caf50";
 
-    <div class="footer">&copy; RONAN G. ANTOQUE — 2025</div>
+        box.innerHTML = `<b>${text}</b>`;
+        box.style.display = "block";
+        setTimeout(() => (box.style.display = "none"), 3000);
+      }
+    </script>
+
+    <script id="flash-data" type="application/json">
+      {{ get_flashed_messages(with_categories=true) | tojson }}
+    </script>
+
+    <script>
+      const flashMessages = JSON.parse(
+        document.getElementById("flash-data").textContent
+      );
+      flashMessages.forEach((msg) => showMessage(msg[1], msg[0]));
+    </script>
+
+    <div class="navbar">Student Management v1.0</div>
+
+    <div class="w3-container w3-padding">{% block content %}{% endblock %}</div>
+
+    <div class="footer">© RONAN G. ANTOQUE — 2025</div>
   </body>
 </html>
