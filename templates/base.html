@@ -13,24 +13,31 @@
 
     <style>
       body {
-        background: #f5f5f5;
+        background: #f0f9ff; /* Light ocean blue background */
         color: #333;
         font-family: "Segoe UI", sans-serif;
       }
 
       .navbar {
-        background: white;
-        border-bottom: 1px solid #ddd;
+        background: #0ea5e9; /* Ocean blue */
+        color: white;
+        border-bottom: 1px solid #0284c7;
         padding: 14px 24px;
         font-weight: 600;
+
+        /* Make the navbar always visible */
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
       }
 
       .footer {
-        color: #666;
+        color: #0c4a6e;
         font-size: 13px;
         margin-top: 40px;
         padding: 20px;
-        border-top: 1px solid #ddd;
+        border-top: 1px solid #bae6fd;
         text-align: center;
       }
 
@@ -43,7 +50,7 @@
         border-radius: 6px;
         display: none;
         background: white;
-        border-left: 4px solid #4caf50;
+        border-left: 4px solid #0ea5e9; /* Ocean blue highlight */
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       }
 
@@ -62,12 +69,12 @@
         const box = document.getElementById("messageBox");
         box.style.borderLeftColor =
           type === "red"
-            ? "#f44336"
+            ? "#dc2626"
             : type === "yellow"
-            ? "#ff9800"
+            ? "#f59e0b"
             : type === "blue"
-            ? "#2196f3"
-            : "#4caf50";
+            ? "#0ea5e9"
+            : "#16a34a";
 
         box.innerHTML = `<b>${text}</b>`;
         box.style.display = "block";
